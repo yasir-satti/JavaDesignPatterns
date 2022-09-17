@@ -43,3 +43,4 @@ A COSTOMER is interested in a specific item a STORE is about to lanuch. So eithe
     - Solution
 Observer pattern provides a PUBLISHER class and  a SUBSCRIBERS class. Publisher class ( in this case STORE ) sends regular stream events recieved by subscribes (in this case CUSTOMER )
 
+Reference [Oserver](https://refactoring.guru/design-patterns/observer)
