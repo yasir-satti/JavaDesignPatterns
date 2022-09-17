@@ -35,14 +35,11 @@ A deisgn pattern usually is described having:
 ### 2.1 Observer (behavioural)
 
     - Intent
-        a behavioral design pattern that lets you define a subscription mechanism to notify multiple objects about any 
-events that happen to the object they’re observing.
+        a behavioral design pattern that lets you define a subscription mechanism to notify multiple objects about any events that happen to the object they’re observing.
 
     - Problem
-        A COSTOMER is interested in a specific item a STORE is about to lanuch. So either the CUSTOMER wastes time checking the 
-avaialbility of the item or STORE wastes resources notifying wrong customers.
+        A COSTOMER is interested in a specific item a STORE is about to lanuch. So either the CUSTOMER wastes time checking the avaialbility of the item or STORE wastes resources notifying wrong customers.
 
     - Solution
-        Observer pattern provides a PUBLISHER class and  a SUBSCRIBERS class. Publisher class ( in this case STORE ) sends 
-regular stream events recieved by subscribes (in this case CUSTOMER )
+        Observer pattern provides a PUBLISHER class and  a SUBSCRIBERS class. Publisher class ( in this case STORE ) sends regular stream events recieved by subscribes (in this case CUSTOMER )
 
