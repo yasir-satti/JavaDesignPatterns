@@ -11,41 +11,61 @@ import static org.junit.jupiter.api.Assertions.*;
 public class SubscriberTest {
 
     @Test
-    public void oneUserSubsribesToChannel() {
-        Channel channel = new Channel();
-        channel.subscribe(1);
+    public void nameOfChannel(){
+        Channel channel = new Channel("Google");
+        assertEquals("Google", channel.getName());
+    }
+    @Test
+    public void nameOfSubscriber(){
+        Subscriber subscriber = new Subscriber("Yasir");
+        assertEquals("Yasir", subscriber.getName());
+    }
+    @Test
+    public void addOneSubscriberToChannel() {
+        Channel channel = new Channel("youtube");
+        Subscriber subscriber = new Subscriber("Yasir");
+        channel.subscribe(subscriber);
         assertEquals(1, channel.numberOfSubscribers());
     }
     @Test
-    public void twoeUserSubsribesToChannel() {
-        Channel channel = new Channel();
-        channel.subscribe(1);
-        channel.subscribe(2);
+    public void addTwoeSubscribersToChannel() {
+        Channel channel = new Channel("youtube");
+        Subscriber subscriber = new Subscriber("Yasir");
+        channel.subscribe(subscriber);
+        channel.subscribe(subscriber);
         assertEquals(2, channel.numberOfSubscribers());
     }
     @Test
     public void removeSubsriberFromChannel() {
-        Channel channel = new Channel();
-        channel.subscribe(1);
-        channel.subscribe(2);
-        channel.unsbscribe(1);
+        Channel channel = new Channel("youtube");
+        Subscriber subscriber = new Subscriber("Yasir");
+        channel.subscribe(subscriber);
+        channel.subscribe(subscriber);
+        channel.unsbscribe(subscriber);
         assertEquals(1, channel.numberOfSubscribers());
     }
     @Test
     public void channelWithNoSubscribers() {
-        Channel channel = new Channel();
-        assertEquals("Channel has no subscribers", channel.numberOfSubscribers());
+        Channel channel = new Channel("youtube");
+        assertEquals(0, channel.numberOfSubscribers());
     }
-//    @Test
-//    public void tryRemoveSubscriberFromchannelWithNoSubscribers() {
-//        Channel channel = new Channel();
-//        channel.unsbscribe(1);
-//        assertEquals("Channel has no subscribers", channel.numberOfSubscribers());
-//    }
-//    @Test
-//    public void userSubscribesToChannel() {
-//        Subscriber subscriber = new Subscriber("Yasir");
-//        assertEquals("PS5 updates", subscriber.addChannel("PS5 updates"));
-//    }
+    @Test
+    public void uploadToChannel() {
+        Channel channel = new Channel("youtube");
+        channel.upload("Title");
+        assertEquals("Title", channel.getTitle());
+    }
+    @Test
+    public void updateSubscriber() {
+        Subscriber subscriber = new Subscriber("Yasir");
+        assertEquals("Video uploaded", subscriber.update("title"));
+    }
+    @Test
+    public void notifySubscriber() {
+        Channel channel = new Channel("youtube");
+        Subscriber subscriber = new Subscriber("Yasir");
+        channel.notifySubscribers();
+        assertEquals(false, subscriber.receivedUpdate());
+    }
 }
 
