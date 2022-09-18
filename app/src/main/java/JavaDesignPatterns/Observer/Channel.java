@@ -13,10 +13,6 @@ public class Channel {
         System.out.println("New channle called " + name + " is created");
     }
 
-    public Channel(List<Subscriber> subscriber) {
-        this.subscribers = subscriber;
-    }
-
     public void subscribe(Subscriber sub) {
 
         subscribers.add(sub);
