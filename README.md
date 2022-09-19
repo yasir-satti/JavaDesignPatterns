@@ -6,7 +6,9 @@
 2. Patterns
 
     - Behavioural
-      - JavaDesignPatterns.Observer
+      - Observer
+   - Creational
+       - Builder
 
 ## 1. What is a design pattern
 
@@ -32,7 +34,7 @@ A deisgn pattern usually is described having:
 
 ## 2. Patterns
 
-### 2.1 JavaDesignPatterns.Observer (behavioural)
+### 2.1 Observer (behavioural)
 
     - Intent
 a behavioral design pattern that lets you define a subscription mechanism to notify multiple objects about any events that happen to the object they’re observing.
@@ -41,9 +43,9 @@ a behavioral design pattern that lets you define a subscription mechanism to not
 A CUSTOMER is interested in a specific item a STORE is about to lanuch. So either the CUSTOMER wastes time checking the avaialbility of the item or STORE wastes resources notifying wrong customers.
 
     - Solution
-JavaDesignPatterns.Observer pattern provides a PUBLISHER class and  a SUBSCRIBERS class. Publisher class ( in this case STORE ) sends regular stream events recieved by subscribes (in this case CUSTOMER )
+Observer pattern provides a PUBLISHER class and  a SUBSCRIBERS class. Publisher class ( in this case STORE ) sends regular stream events recieved by subscribes (in this case CUSTOMER )
 
-Reference [JavaDesignPatterns.Observer](https://refactoring.guru/design-patterns/observer)
+Reference [Observer](https://refactoring.guru/design-patterns/observer)
 
     - Code example
 
@@ -193,3 +195,38 @@ public interface Observer {
     void notifySubscribers();
 }
 ```
+
+### 2.2 Builder (Creational)
+
+    - Intent
+Builder design pattern is an alternative way to construct complex objects and should be used only when we want to build 
+different types of immutable objects using same object building process. The pattern allows you to produce different 
+types and representations of an object using the same construction code. Builder pattern aims to “Separate the 
+construction of a complex object from its representation so that the same construction process can create multiple 
+different representations.”. A builder pattern should be more like a fluent interface. A fluent interface is normally 
+implemented by using method cascading (or method chaining) as we see it in lambda expressions.
+
+    - Problem
+Imagine a complex object that requires laborious, step-by-step initialization of many fields and nested objects. Such 
+initialization code is usually buried inside a monstrous constructor with lots of parameters. Or even worse: scattered 
+all over the client code.
+
+    - Solution
+The Builder pattern suggests that you extract the object construction code out of its own class and move it to separate 
+objects called builders. The pattern organizes object construction into a set of steps . To create an object, you 
+execute a series of these steps on a builder object. The important part is that you don’t need to call all of the steps. 
+You can call only those steps that are necessary for producing a particular configuration of an object.
+
+    - Director
+You can go further and extract a series of calls to the builder steps you use to construct a product into a separate 
+class called director. The director class defines the order in which to execute the building steps, while the builder 
+provides the implementation for those steps.
+
+Reference [Builder](https://refactoring.guru/design-patterns/builder)
+
+    - Code example
+
+We aim to build a desktop product with following features:
+- HP desktop
+- Dell desktop
+- Each desktop will have its own configuration for monitor, mouse, keyboard, ..etc.

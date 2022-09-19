@@ -8,7 +8,7 @@ import java.util.concurrent.SubmissionPublisher;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class SubscriberTest {
+public class ObserverTest {
 
     @Test
     public void nameOfChannel(){
