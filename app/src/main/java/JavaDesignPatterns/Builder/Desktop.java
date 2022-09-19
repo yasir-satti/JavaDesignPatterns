@@ -25,7 +25,7 @@ public class Desktop {
         this.speaker = speaker;
     }
 
-    public void setRam(String ram) {
+    public void setRAM(String ram) {
         this.ram = ram;
     }
 
@@ -35,5 +35,16 @@ public class Desktop {
 
     public void setMotherboard(String motherboard) {
         this.motherboard = motherboard;
+    }
+
+    public void showSpecs(){
+        System.out.println("--------------- Desktop specifications ----------------------------------");
+        System.out.println("Monitor     : " + monitor + "\n");
+        System.out.println("Keyboard    : " + keyboard + "\n");
+        System.out.println("Mouse       : " + mouse + "\n");
+        System.out.println("Speaker     : " + speaker + "\n");
+        System.out.println("RAM         : " + ram + "\n");
+        System.out.println("Processor   : " + processor + "\n");
+        System.out.println("Motherboard : " + motherboard + "\n");
     }
 }
