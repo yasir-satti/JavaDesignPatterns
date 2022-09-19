@@ -1,24 +1,11 @@
 package JavaDesignPatterns.Builder;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-
+import static com.github.stefanbirkner.systemlambda.SystemLambda.tapSystemOut;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class BuilderTest {
-
-    private final PrintStream standardOut = System.out;
-    private final ByteArrayOutputStream outputStreamCaptor = new ByteArrayOutputStream();
-
-    @BeforeEach
-    public void setUp(){
-        PrintStream printStream = new PrintStream(outputStreamCaptor);
-        System.setOut(printStream);
-    }
+public class BuilderJUnit5SysLambdaTest {
 
     String dellSpecs = "--------------- Desktop specifications ----------------------------------\n" +
             "Monitor     : Dell monitor\n" +
@@ -51,29 +38,32 @@ public class BuilderTest {
             "Motherboard : HP motherboard";
 
     @Test
-    public void buildHPDesktop(){
+    public void buildHPDesktop() throws Exception{
         Director director = new Director();
         DellDesktopBuilder dellBuilder = new DellDesktopBuilder();
         director.buildDellDesktop(dellBuilder);
         Desktop dellDesktop = dellBuilder.getDesktop();
-        dellDesktop.showSpecs();
-        String builderOutput = outputStreamCaptor.toString().trim();
-        assertEquals(dellSpecs, builderOutput);
+        String builderOutputText = (
+                tapSystemOut(() -> {
+                    dellDesktop.showSpecs();
+                })
+        )
+                .trim();
+        assertEquals(dellSpecs, builderOutputText);
     }
 
     @Test
-    public void buildDellDesktop(){
+    public void buildDellDesktop() throws Exception{
         Director director = new Director();
         HPDesktopBuilder hpBuilder = new HPDesktopBuilder();
         director.buildHPDesktop(hpBuilder);
         Desktop hpDesktop = hpBuilder.getDesktop();
-        hpDesktop.showSpecs();
-        String builderOutput = outputStreamCaptor.toString().trim();
-        assertEquals(hpSpecs, builderOutput);
-    }
-
-    @AfterEach
-    public void tearDown(){
-        System.setOut(standardOut);
+        String builderOutputText = (
+                tapSystemOut(() -> {
+                    hpDesktop.showSpecs();
+                })
+            )
+                .trim();
+        assertEquals(hpSpecs, builderOutputText);
     }
 }
