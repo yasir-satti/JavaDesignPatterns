@@ -6,9 +6,9 @@
 2. Patterns
 
     - Behavioural
-      - Observer
-   - Creational
-       - Builder
+        - Observer
+    - Creational
+        - Builder
 
 ## 1. What is a design pattern
 
@@ -20,17 +20,17 @@ Design patterns is all about designing maintainable and extensible object-orient
 
 A deisgn pattern usually is described having:
 
- - Intent
-    this describes the problem and the solution
+- Intent
+  this describes the problem and the solution
 
-  - Motivations
-    Provides more detail on the problem and how the pattern makes the solution possible
+- Motivations
+  Provides more detail on the problem and how the pattern makes the solution possible
 
-   - Structure
-    Provides the classes that make the pattern solution and how they relate to each other
+- Structure
+  Provides the classes that make the pattern solution and how they relate to each other
 
-   - Code example
-    Sample example using a language to make it easier to grasp how the pattern works
+- Code example
+  Sample example using a language to make it easier to grasp how the pattern works
 
 ## 2. Patterns
 
@@ -199,27 +199,27 @@ public interface Observer {
 ### 2.2 Builder (Creational)
 
     - Intent
-Builder design pattern is an alternative way to construct complex objects and should be used only when we want to build 
-different types of immutable objects using same object building process. The pattern allows you to produce different 
-types and representations of an object using the same construction code. Builder pattern aims to “Separate the 
-construction of a complex object from its representation so that the same construction process can create multiple 
-different representations.”. A builder pattern should be more like a fluent interface. A fluent interface is normally 
+Builder design pattern is an alternative way to construct complex objects and should be used only when we want to build
+different types of immutable objects using same object building process. The pattern allows you to produce different
+types and representations of an object using the same construction code. Builder pattern aims to “Separate the
+construction of a complex object from its representation so that the same construction process can create multiple
+different representations.”. A builder pattern should be more like a fluent interface. A fluent interface is normally
 implemented by using method cascading (or method chaining) as we see it in lambda expressions.
 
     - Problem
-Imagine a complex object that requires laborious, step-by-step initialization of many fields and nested objects. Such 
-initialization code is usually buried inside a monstrous constructor with lots of parameters. Or even worse: scattered 
+Imagine a complex object that requires laborious, step-by-step initialization of many fields and nested objects. Such
+initialization code is usually buried inside a monstrous constructor with lots of parameters. Or even worse: scattered
 all over the client code.
 
     - Solution
-The Builder pattern suggests that you extract the object construction code out of its own class and move it to separate 
-objects called builders. The pattern organizes object construction into a set of steps . To create an object, you 
-execute a series of these steps on a builder object. The important part is that you don’t need to call all of the steps. 
+The Builder pattern suggests that you extract the object construction code out of its own class and move it to separate
+objects called builders. The pattern organizes object construction into a set of steps . To create an object, you
+execute a series of these steps on a builder object. The important part is that you don’t need to call all of the steps.
 You can call only those steps that are necessary for producing a particular configuration of an object.
 
     - Director
-You can go further and extract a series of calls to the builder steps you use to construct a product into a separate 
-class called director. The director class defines the order in which to execute the building steps, while the builder 
+You can go further and extract a series of calls to the builder steps you use to construct a product into a separate
+class called director. The director class defines the order in which to execute the building steps, while the builder
 provides the implementation for those steps.
 
 Reference [Builder](https://refactoring.guru/design-patterns/builder)
@@ -230,3 +230,178 @@ We aim to build a desktop product with following features:
 - HP desktop
 - Dell desktop
 - Each desktop will have its own configuration for monitor, mouse, keyboard, ..etc.
+
+The builder is an interface that specifies the what to build
+
+```java
+package JavaDesignPatterns.Builder;
+
+public interface Builder {
+
+    void buildMonitor();
+    void buildKeyboard();
+    void buildMouse();
+    void buildSpeaker();
+    void buildRAM();
+    void buildProcessor();
+    void buildMotherboard();
+}
+```
+
+Then the build concrete classes implement the methods in the builder each according to its specific features and at the
+end it returns the object product
+
+So HP desktop will be
+
+```java
+package JavaDesignPatterns.Builder;
+
+public class HPDesktopBuilder implements Builder{
+
+    Desktop desktop = new Desktop();
+    @Override
+    public void buildMonitor() {
+        desktop.setMonitor("HP monitor");
+    }
+
+    @Override
+    public void buildKeyboard() {
+        desktop.setKeyboard("HP keyboard");
+    }
+
+    @Override
+    public void buildMouse() {
+        desktop.setMouse("HP mouse");
+    }
+
+    @Override
+    public void buildSpeaker() {
+        desktop.setSpeaker("HP speaker");
+    }
+
+    @Override
+    public void buildRAM() {
+        desktop.setRAM("HP RAM");
+    }
+
+    @Override
+    public void buildProcessor() {
+        desktop.setProcessor("HP processor");
+    }
+
+    @Override
+    public void buildMotherboard() {
+        desktop.setMotherboard("HP motherboard");
+    }
+
+    public Desktop getDesktop() {
+        return desktop;
+    }
+}
+```
+
+And Dell desktop will be
+```java
+package JavaDesignPatterns.Builder;
+
+public class DellDesktopBuilder implements Builder{
+
+    Desktop desktop = new Desktop();
+    @Override
+    public void buildMonitor() {
+        desktop.setMonitor("Dell monitor");
+    }
+
+    @Override
+    public void buildKeyboard() {
+        desktop.setKeyboard("Dell keyboard");
+    }
+
+    @Override
+    public void buildMouse() {
+        desktop.setMouse("Dell mouse");
+    }
+
+    @Override
+    public void buildSpeaker() {
+        desktop.setSpeaker("Dell speaker");
+    }
+
+    @Override
+    public void buildRAM() {
+        desktop.setRAM("Dell RAM");
+    }
+
+    @Override
+    public void buildProcessor() {
+        desktop.setProcessor("Dell processor");
+    }
+
+    @Override
+    public void buildMotherboard() {
+        desktop.setMotherboard("Dell motherboard");
+    }
+
+    public Desktop getDesktop() {
+        return desktop;
+    }
+}
+```
+
+The Director is the one that oversees the building process and the order of the steps by passing the concerete build objects to it and then go through the build steps accordingly
+
+```java
+package JavaDesignPatterns.Builder;
+
+public class Director {
+
+    public void buildDellDesktop(DellDesktopBuilder dellDesktopBuilder){
+        dellDesktopBuilder.buildMonitor();
+        dellDesktopBuilder.buildKeyboard();
+        dellDesktopBuilder.buildMouse();
+        dellDesktopBuilder.buildSpeaker();
+        dellDesktopBuilder.buildRAM();
+        dellDesktopBuilder.buildProcessor();
+        dellDesktopBuilder.buildMotherboard();
+    }
+
+    public void buildHPDesktop(HPDesktopBuilder hpDesktopBuilder){
+        hpDesktopBuilder.buildMonitor();
+        hpDesktopBuilder.buildKeyboard();
+        hpDesktopBuilder.buildMouse();
+        hpDesktopBuilder.buildSpeaker();
+        hpDesktopBuilder.buildRAM();
+        hpDesktopBuilder.buildProcessor();
+        hpDesktopBuilder.buildMotherboard();
+    }
+}
+```
+
+Now to build and show the product you just need to:
+
+- get a Director object
+- pass concerete build objects
+- get the product built
+
+```java
+package JavaDesignPatterns.Builder;
+
+public class DesktopSpecsApp {
+
+    public static void main(String[] args){
+
+        Director director = new Director();
+        DellDesktopBuilder dellBuilder = new DellDesktopBuilder();
+        director.buildDellDesktop(dellBuilder);
+        Desktop dellDesktop = dellBuilder.getDesktop();
+        dellDesktop.showSpecs();
+
+        HPDesktopBuilder hpBuilder = new HPDesktopBuilder();
+        director.buildHPDesktop(hpBuilder);
+        Desktop hpDesktop = hpBuilder.getDesktop();
+        hpDesktop.showSpecs();
+
+
+    }
+}
+```
