@@ -9,6 +9,8 @@
         - Observer
     - Creational
         - Builder
+    - Structural
+        - Adapter 
 
 ## 1. What is a design pattern
 
@@ -403,5 +405,123 @@ public class DesktopSpecsApp {
 
 
     }
+}
+```
+
+### 2.3 Adapter (Structural)
+
+
+    - Intent
+Adapter pattern makes it possible to connect two incompatible interfaces that cannot be connected directly. 
+
+    - Problem
+You have an audio player ( AudioPlayer class tht implements MediaPlayer interface ) that can play mp3 files. We also have an advanced audio player 
+( AdvancedMediaPlayer class that implements AdvancedMediaPlayer interface ) that can play vlc and mp4 files. Each of those players have their interfaces and conceret classes. We want the audio player to be able
+to play the vlc and mp4 files format too.
+
+    - Solution
+The Adaptrr pattern solves this in the following way:
+- We create MediaAdapter that implements the MediaPlayer interface
+- The AudioPlayer class uses AdvancedMediaPlayer class to play the vlc and mp4 file formats
+
+References [Adaptr](https://refactoring.guru/design-patterns/adapter) / 
+[Adapter pattern tutorial](https://www.tutorialspoint.com/design_pattern/adapter_pattern.htm) 
+/ [Adapter Pattern in Java](https://www.baeldung.com/java-adapter-pattern)
+
+    - Code example
+
+We start by creating MediaPlayer interface with method accepting file type and file name
+```java
+public interface MediaPlayer {
+    void play(String audioType, String fileName);
+}
+```
+Create interface AdvancedMediaPlayer to use it to pass requests by MediaAdaptor to VlcPlayer and Mp4Player classes
+```java
+public interface AdvancedMediaPlayer {
+
+    void playVlc(String fileName);
+    
+    void playMp4(String fileName);
+}
+```
+We create VlcPlayer class tht implements the AdvancedMediaPlayer interface
+```java
+public class VlcPlayer implements AdvancedMediaPlayer {
+
+    public void playVlc(String fileName){
+        System.out.println("Playing vlc file. Name: " + fileName);
+    }
+}
+```
+Mp4player class
+```java
+public class Mp4Player {
+
+    public void playMp4(String fileName){
+        System.out.println("Playing mp4 file. Name: " + fileName);
+    }
+}
+```
+Now here is the point where the Adapter pattern works its magic. Create Adapter class MediaAdapter which does the following:
+
+- implements the MediaPlayer interface
+- It has a constructor with audio type parameter 
+```java
+public class MediaAdapter implements MediaPlayer{
+
+    AdvancedMediaPlayer advancedMediaPlayer;
+
+    public MediaAdapter(String audioType){
+        if (audioType.equalsIgnoreCase("vlc")) {
+            advancedMediaPlayer = new VlcPlayer();
+        } else if (audioType.equalsIgnoreCase("mp4")) {
+            advancedMediaPlayer = new Mp4Player();
+        }
+    }
+
+    @Override
+    public  void play(String audioType, String fileName){
+        if (audioType.equalsIgnoreCase("vlc")) {
+            advancedMediaPlayer.playVlc(fileName);
+        } else if (audioType.equalsIgnoreCase("mp4")) {
+            advancedMediaPlayer.playMp4(fileName);
+        }
+    }
+}
+```
+Now create concrete class AudioPlayer that does the following:
+- implements MediaPlayer interface
+- Plays the mp3 file format
+- Calls the MediaAdaptor when either vlc or mp4 file formats are deteced
+```java
+public class AudioPlayer implements MediaPlayer{
+
+    MediaAdapter mediaAdapter;
+
+    @Override
+    public void play(String audioType, String fileName){
+        if (audioType.equalsIgnoreCase("mp3")) {
+            System.out.println("Playing mp3 file. Name: " + fileName);
+        } else if (audioType.equalsIgnoreCase("vlc") || audioType.equalsIgnoreCase("mp4")) {
+            mediaAdapter = new MediaAdapter(audioType);
+            mediaAdapter.play(audioType, fileName);
+        } else {
+            System.out.println("Invalid media." + audioType + " format not supported.");
+        }
+    }
+}
+```
+Now you can the differernt audio formats
+```java
+public class AdapterApp {
+   public static void main(String[] args) {
+      AudioPlayer audioPlayer = new AudioPlayer();
+
+      audioPlayer.play("mp3", "beyond the horizon.mp3");
+      audioPlayer.play("mp4", "alone.mp4");
+      audioPlayer.play("vlc", "far far away.vlc");
+      audioPlayer.play("avi", "mind me.avi");
+   }
 }
 ```
