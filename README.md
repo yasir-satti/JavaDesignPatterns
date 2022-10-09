@@ -420,7 +420,7 @@ You have an audio player ( AudioPlayer class tht implements MediaPlayer interfac
 to play the vlc and mp4 files format too.
 
     - Solution
-The Adaptrr pattern solves this in the following way:
+The Adapter pattern solves this in the following way:
 - We create MediaAdapter that implements the MediaPlayer interface
 - The AudioPlayer class uses AdvancedMediaPlayer class to play the vlc and mp4 file formats
 
@@ -456,7 +456,7 @@ public class VlcPlayer implements AdvancedMediaPlayer {
 ```
 Mp4player class
 ```java
-public class Mp4Player {
+public class Mp4Player implements AdvancedMediaPlayer{
 
     public void playMp4(String fileName){
         System.out.println("Playing mp4 file. Name: " + fileName);
