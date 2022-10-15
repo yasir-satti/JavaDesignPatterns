@@ -9,6 +9,7 @@
         - Observer
     - Creational
         - Builder
+        - Factory method
     - Structural
         - Adapter 
 
@@ -18,7 +19,12 @@
 A design pattern is solution for a problem, it helps you to design a solution and derive an implementation for the
 solution. Design patterns are common solutions for common problems found in software design.
 
-Design patterns is all about designing maintainable and extensible object-oriented software
+Design patterns is all about designing maintainable and extensible object-oriented software.
+
+Type of design patterns:
+- Creational Patterns: These design patterns provide ways to create objects while hiding the creation logic, instead of instantiating objects directly using the new operator. This gives the program more flexibility in deciding which objects need to be created for a given use case.
+- Structural Patterns: These design patterns deal with class and object composition. The concept of inheritance is used to compose interfaces and define ways to compose objects to obtain new functionality.
+- Behavioral Patterns: These design patterns are specifically concerned with communication between objects.
 
 A deisgn pattern usually is described having:
 
@@ -523,5 +529,322 @@ public class AdapterApp {
       audioPlayer.play("vlc", "far far away.vlc");
       audioPlayer.play("avi", "mind me.avi");
    }
+}
+```
+
+### 2.4 Factory Method (Creational)
+
+
+    - Intent
+- Define an interface for creating an object, but let subclasses decide which class to instantiate. Factory Method lets a class defer instantiation to subclasses.
+- Defining a "virtual" constructor.
+- The new operator considered harmful. There is a difference between requesting an object and creating one. The new operator always creates an object, and fails to encapsulate object creation. A Factory Method enforces that encapsulation, and allows an object to be requested without inextricable coupling to the act of creation.
+
+
+     - Problem
+  Imagine that you’re creating a logistics management application. The first version of your app can only handle transportation by trucks, so the bulk of your code lives inside the Truck class.
+
+After a while, your app becomes pretty popular. Each day you receive dozens of requests from sea transportation companies to incorporate sea logistics into the app.
+Great news, right? But how about the code? At present, most of your code is coupled to the Truck class. Adding Ships into the app would require making changes to the entire codebase. Moreover, if later you decide to add another type of transportation to the app, you will probably need to make all of these changes again.
+
+As a result, you will end up with pretty nasty code, riddled with conditionals that switch the app’s behavior depending on the class of transportation objects.
+
+    - Solution
+The Factory Method pattern suggests that you replace direct object construction calls (using the new operator) with calls to a special factory method. Don’t worry: the objects are still created via the new operator, but it’s being called from within the factory method. Objects returned by a factory method are often referred to as products.
+
+Factory Method is to creating objects as Template Method is to implementing an algorithm. A superclass specifies all standard and generic behavior (using pure virtual "placeholders" for creation steps), and then delegates the creation details to subclasses that are supplied by the client.
+
+Factory Method makes a design more customizable and only a little more complicated. Other design patterns require new classes, whereas Factory Method only requires a new operation.
+
+People often use Factory Method as the standard way to create objects; but it isn't necessary if: the class that's instantiated never changes, or instantiation takes place in an operation that subclasses can easily override (such as an initialization operation).
+
+Factory Methods are routinely specified by an architectural framework, and then implemented by the user of the framework.
+
+References [Adaptr](https://refactoring.guru/design-patterns/adapter) /
+[Adapter pattern tutorial](https://www.tutorialspoint.com/design_pattern/adapter_pattern.htm)
+/ [Adapter Pattern in Java](https://www.baeldung.com/java-adapter-pattern)
+
+    - Code example
+
+Let us create pizza with different types ( pepperoni, cheese ).
+
+So we start by having an abstract pizza class
+```java
+abstract class Pizza {}
+```
+We have our pizza type classes that extend the abstract pizza class
+```java
+class PepperoniPizza extends Pizza {}
+```
+```java
+class CheesePizza extends Pizza {}
+```
+We have our pizza store class with one method which creates the requested pizza
+```java
+class PizzaFactory {
+    public Pizza createPizza(String pizzaType) {
+        if (pizzaType.equals("pepperoni")) {
+            return new PepperoniPizza();
+        } else if (pizzaType.equals("cheese")){
+            return new CheesePizza();
+        }
+    }
+}
+```
+
+The abstract Pizza class will have methods to create a requested pizza. The implementation will be left to the concrete classes CheesePizza and PepperoniPizza
+```java
+abstract class Pizza {
+    public abstract void prepare();
+    public abstract void bake();
+    public abstract void cut();
+    public abstract void box();
+}
+```
+the conceret classes implementation
+```java
+public class CheesePizza extends Pizza{
+
+    @Override
+    public void prepare() {
+        System.out.println("Preparing cheese pizza");
+    }
+
+    @Override
+    public void bake() {
+        System.out.println("Baking cheese pizza");
+    }
+
+    @Override
+    public void cut() {
+        System.out.println("Cutting cheese pizza");
+    }
+
+    @Override
+    public void box() {
+        System.out.println("Boxing cheese pizza");
+    }
+
+}
+```
+```java
+public class PepperoniPizza extends Pizza{
+
+    @Override
+    public void prepare() {
+        System.out.println("Preparing pepperoni pizza");
+    }
+
+    @Override
+    public void bake() {
+        System.out.println("Baking pepperoni pizza");
+    }
+
+    @Override
+    public void cut() {
+        System.out.println("Cutting pepperoni pizza");
+    }
+
+    @Override
+    public void box() {
+        System.out.println("Boxing pepperoni pizza");
+    }
+}
+```
+The factoryPizza class is where the order and creation of the pizza happens. Here we will have a conceret orderPizza method taking the type of pizza ordered as input. Then the type of pizza is passed to an abstract createPizza method which is implemented by a pizzaStore conceret class that instatiate the needed class to fulfill the pizza order. After that it proceeds with the pizza creation steps.
+```java
+public abstract class PizzaFactory {
+    public Pizza orderPizza(String pizzaType) {
+
+        Pizza pizza = createPizza(pizzaType);
+
+        pizza.prepare();
+        pizza.bake();
+        pizza.cut();
+        pizza.box();
+
+        return pizza;
+    }
+
+    protected abstract Pizza createPizza(String pizzaType);
+
+}
+```
+
+The PizzaStore conceret class
+```java
+public class MCRPizzaStore extends PizzaFactory{
+    @Override
+    protected Pizza createPizza(String pizzaType) {
+        if (pizzaType.equals(("cheese"))) {
+            return new CheesePizza();
+        } else if (pizzaType.equals("pepperoni")) {
+            return new PepperoniPizza();
+        } else {
+            return null;
+        }
+    }
+}
+```
+It instatiates the relevant class required by the order
+```java
+public class CheesePizza extends Pizza{
+
+    @Override
+    public void prepare() {
+        System.out.println("Preparing cheese pizza");
+    }
+
+    @Override
+    public void bake() {
+        System.out.println("Baking cheese pizza");
+    }
+
+    @Override
+    public void cut() {
+        System.out.println("Cutting cheese pizza");
+    }
+
+    @Override
+    public void box() {
+        System.out.println("Boxing cheese pizza");
+    }
+
+}
+```
+```java
+public class PepperoniPizza extends Pizza{
+
+    @Override
+    public void prepare() {
+        System.out.println("Preparing pepperoni pizza");
+    }
+
+    @Override
+    public void bake() {
+        System.out.println("Baking pepperoni pizza");
+    }
+
+    @Override
+    public void cut() {
+        System.out.println("Cutting pepperoni pizza");
+    }
+
+    @Override
+    public void box() {
+        System.out.println("Boxing pepperoni pizza");
+    }
+}
+```
+Now you can make the orders
+```java
+public class MCRPizzaOrdersApp {
+
+    public static void main(String[] args){
+        MCRPizzaStore mcrPizzaStore = new MCRPizzaStore();
+
+        Pizza cheesePizza = mcrPizzaStore.orderPizza("cheese");
+
+        Pizza pepperoniPizza = mcrPizzaStore.orderPizza("pepperoni");
+    }
+}
+```
+The benefits of using the factory method are:
+
+- You only need to instatiate the pizza store and then specify the pizza type
+- The abstract Pizza class provides flexibility and leave the implementation to the concerete classes extending it
+- How the implementation is done is completely hidden
+
+Find below the test
+```java
+public class factoryTest {
+
+    private final PrintStream standardOut = System.out;
+    private final ByteArrayOutputStream outputStreamCaptor = new ByteArrayOutputStream();
+
+    @BeforeEach
+    public void setUp(){
+        PrintStream printStream = new PrintStream(outputStreamCaptor);
+        System.setOut(printStream);
+    }
+
+    @Test
+    void prepareCheesePizza(){
+        MCRPizzaStore mcrPizzaStore = new MCRPizzaStore();
+        Pizza cheesePizza = mcrPizzaStore.createPizza("cheese");
+        cheesePizza.prepare();
+        String builderOutput = outputStreamCaptor.toString().trim();
+        assertEquals("Preparing cheese pizza", builderOutput);
+    }
+
+    @Test
+    void bakeCheesePizza(){
+        MCRPizzaStore mcrPizzaStore = new MCRPizzaStore();
+        Pizza cheesePizza = mcrPizzaStore.createPizza("cheese");
+        cheesePizza.bake();
+        String builderOutput = outputStreamCaptor.toString().trim();
+        assertEquals("Baking cheese pizza", builderOutput);
+    }
+
+    @Test
+    void cutCheesePizza(){
+        MCRPizzaStore mcrPizzaStore = new MCRPizzaStore();
+        Pizza cheesePizza = mcrPizzaStore.createPizza("cheese");
+        cheesePizza.cut();
+        String builderOutput = outputStreamCaptor.toString().trim();
+        assertEquals("Cutting cheese pizza", builderOutput);
+    }
+
+    @Test
+    void boxCheesePizza(){
+        MCRPizzaStore mcrPizzaStore = new MCRPizzaStore();
+        Pizza cheesePizza = mcrPizzaStore.createPizza("cheese");
+        cheesePizza.box();
+        String builderOutput = outputStreamCaptor.toString().trim();
+        assertEquals("Boxing cheese pizza", builderOutput);
+    }
+
+    @Test
+    void preparePepperoniPizza(){
+        MCRPizzaStore mcrPizzaStore = new MCRPizzaStore();
+        Pizza pepperoniPizza = mcrPizzaStore.createPizza("pepperoni");
+        pepperoniPizza.prepare();
+        String builderOutput = outputStreamCaptor.toString().trim();
+        assertEquals("Preparing pepperoni pizza", builderOutput);
+    }
+
+    @Test
+    void bakePepperoniPizza(){
+        MCRPizzaStore mcrPizzaStore = new MCRPizzaStore();
+        Pizza pepperoniPizza = mcrPizzaStore.createPizza("pepperoni");
+        pepperoniPizza.bake();
+        String builderOutput = outputStreamCaptor.toString().trim();
+        assertEquals("Baking pepperoni pizza", builderOutput);
+    }
+
+    @Test
+    void cutPepperoniPizza(){
+        MCRPizzaStore mcrPizzaStore = new MCRPizzaStore();
+        Pizza pepperoniPizza = mcrPizzaStore.createPizza("pepperoni");
+        pepperoniPizza.cut();
+        String builderOutput = outputStreamCaptor.toString().trim();
+        assertEquals("Cutting pepperoni pizza", builderOutput);
+    }
+
+    @Test
+    void boxPepperoniPizza(){
+        MCRPizzaStore mcrPizzaStore = new MCRPizzaStore();
+        Pizza pepperoniPizza = mcrPizzaStore.createPizza("pepperoni");
+        pepperoniPizza.box();
+        String builderOutput = outputStreamCaptor.toString().trim();
+        assertEquals("Boxing pepperoni pizza", builderOutput);
+    }
+
+    @Test
+    void orderWrongPizza(){
+        MCRPizzaStore mcrPizzaStore = new MCRPizzaStore();
+        Pizza pizza = mcrPizzaStore.createPizza("anchovi");
+        assertEquals(null, pizza);
+    }
 }
 ```
