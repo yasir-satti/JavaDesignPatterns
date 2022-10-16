@@ -1,19 +1,20 @@
 # Design Patterns using JAVA
 ## Contents
 
-1. What is a design pattern
+1. [What is a design pattern](#what)
 
-2. Patterns
+2. [Patterns](#patterns)
 
     - Behavioural
-        - Observer
+        - [Observer](#observer)
     - Creational
-        - Builder
-        - Factory method
+        - [Builder](#builder)
+        - [Factory method](#factorymethod)
     - Structural
-        - Adapter
-        - Facade
+        - [Adapter](adapter)
+        - [Facade](#facade)
 
+<a name="what"></a>
 ## 1. What is a design pattern
 
 
@@ -41,8 +42,9 @@ A deisgn pattern usually is described having:
 - Code example
   Sample example using a language to make it easier to grasp how the pattern works
 
+<a name="patterns"></a>
 ## 2. Patterns
-
+<a name="observer"></a>
 ### 2.1 Observer (behavioural)
 
     - Intent
@@ -204,7 +206,7 @@ public interface Observer {
     void notifySubscribers();
 }
 ```
-
+<a name="builder"></a>
 ### 2.2 Builder (Creational)
 
     - Intent
@@ -414,7 +416,7 @@ public class DesktopSpecsApp {
     }
 }
 ```
-
+<a name="adapter"></a>
 ### 2.3 Adapter (Structural)
 
 
@@ -532,7 +534,7 @@ public class AdapterApp {
    }
 }
 ```
-
+<a name="factorymethod"></a>
 ### 2.4 Factory Method (Creational)
 
 
@@ -849,7 +851,7 @@ public class factoryTest {
     }
 }
 ```
-
+<a name="facade"></a>
 ### 2.5 Facade (Structural)
 
 
