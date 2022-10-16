@@ -20,18 +20,19 @@ public class FundOperations {
     }
 
     public boolean isBalanceEnoughForCashWithDrawal(double cashWithdrawal) {
+        boolean result = false;
         if (this.balance >= cashWithdrawal) {
-            decreaseBalance(cashWithdrawal);
-            System.out.println("Cash withdrawal complete. Current balance is £" + this.balance + "\n");
-            return true;
+//            decreaseBalance(cashWithdrawal);
+//            System.out.println("Cash withdrawal of £" + cashWithdrawal + " is complete. The new balance is £" + this.balance + "\n");
+            result = true;
         } else {
-            System.out.println("Insufficient balance to make cash withdrawal. Current balance is £" + this.balance + "\n");
-            return false;
+            System.out.println("Insufficient balance to make cash withdrawal of £" + cashWithdrawal + ". Current balance is £" + this.balance + "\n");
         }
+        return result;
     }
 
     public void makeCashDeposit(double cashTodeposit) {
         increaseBalance(cashTodeposit);
-        System.out.println("Cash deposit completed. The new balance is £" + this.balance + "\n");
+        System.out.println("Cash deposit of £" + cashTodeposit + " is completed. The new balance is £" + this.balance + "\n");
     }
 }

@@ -79,5 +79,4 @@ public class BankAccountTest {
         double newBalance = fundOpeations.getBalance();
         assertEquals(1500.00, newBalance);
     }
-
 }

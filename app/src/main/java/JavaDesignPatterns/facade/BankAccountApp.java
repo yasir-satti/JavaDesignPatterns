@@ -4,24 +4,15 @@ public class BankAccountApp {
 
     public static void main(String[] args){
 
-        int accountNumber = 12345678;
-        int securityCode = 87654321;
+        final int accountNumber = 12345678;
+        final int securityCode = 87654321;
+        final double startingBalance = 0.00;
 
-        WelcomeBankMessage welcomeBankMessage = new WelcomeBankMessage();
-        double startingBalance = 1000.00;
-        double cashToWithDraw = 450.00;
-        SecurityCodeCheck securityCodeCheck = new SecurityCodeCheck();
-        AccountNumberCheck accountNumberCheck = new AccountNumberCheck();
-        FundOperations fundOperations = new FundOperations(startingBalance);
+        BankAccountFacade xyzBank = new BankAccountFacade(accountNumber, securityCode, startingBalance);
 
-        if (accountNumberCheck.isAccountActive(accountNumber) && securityCodeCheck.isSecurityCodeCorrect(securityCode)) {
-            if (fundOperations.isBalanceEnoughForCashWithDrawal(cashToWithDraw)){
-                System.out.println("Cash withdrawal complete. New balance £" + fundOperations.getBalance() + "\n");
-            } else {
-                System.out.println("Transaction failed !");
-            }
-            double depositeCash = 250;
-            fundOperations.makeCashDeposit(depositeCash);
-        }
+        xyzBank.depositCash(1000.00);
+        xyzBank.withdrawCash(570.00);
+        xyzBank.depositCash(230.00);
+
     }
 }

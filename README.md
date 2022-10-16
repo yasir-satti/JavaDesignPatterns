@@ -11,7 +11,8 @@
         - Builder
         - Factory method
     - Structural
-        - Adapter 
+        - Adapter
+        - Facade
 
 ## 1. What is a design pattern
 
@@ -848,3 +849,323 @@ public class factoryTest {
     }
 }
 ```
+
+### 2.5 Facade (Structural)
+
+
+    - Intent
+Facade is a structural design pattern that provides a simplified interface to a library, a framework, or any other complex set of classes. encapsulates a complex subsystem behind a simple interface. It hides much of the complexity and makes the subsystem easy to use.
+
+Also, if we need to use the complex subsystem directly, we still can do that; we aren't forced to use the facade all the time. Besides a much simpler interface, there's one more benefit of using this design pattern. It decouples a client implementation from the complex subsystem. Thanks to this, we can make changes to the existing subsystem and don't affect a client.
+
+     - Problem
+Imagine that you must make your code work with a broad set of objects that belong to a sophisticated library or framework. Ordinarily, you’d need to initialize all of those objects, keep track of dependencies, execute methods in the correct order, and so on.
+
+As a result, the business logic of your classes would become tightly coupled to the implementation details of 3rd-party classes, making it hard to comprehend and maintain.
+
+    - Solution
+A facade is a class that provides a simple interface to a complex subsystem which contains lots of moving parts. A facade might provide limited functionality in comparison to working with the subsystem directly. However, it includes only those features that clients really care about.
+
+Having a facade is handy when you need to integrate your app with a sophisticated library that has dozens of features, but you just need a tiny bit of its functionality.
+
+References [Facade](https://refactoring.guru/design-patterns/facade) /
+[Facade Design Pattern in Java](https://www.baeldung.com/java-facade-pattern)
+/ [Facade Design Pattern | Introduction](https://www.geeksforgeeks.org/facade-design-pattern-introduction/)
+
+    - Code example
+
+Let us create a bank app that deos simple operations:
+ - account number check
+ - account security number check
+ - deposite
+ - cash withdrawal
+
+The app will look like this
+```java
+public class BankAccountApp {
+
+    public static void main(String[] args){
+
+        int accountNumber = 12345678;
+        int securityCode = 87654321;
+
+        WelcomeBankMessage welcomeBankMessage = new WelcomeBankMessage();
+        
+        double startingBalance = 1000.00;
+        double cashToWithDraw = 450.00;
+        
+        SecurityCodeCheck securityCodeCheck = new SecurityCodeCheck();
+        AccountNumberCheck accountNumberCheck = new AccountNumberCheck();
+        FundOperations fundOperations = new FundOperations(startingBalance);
+
+        if (accountNumberCheck.isAccountActive(accountNumber) && securityCodeCheck.isSecurityCodeCorrect(securityCode)) {
+            if (fundOperations.isBalanceEnoughForCashWithDrawal(cashToWithDraw)){
+                System.out.println("Cash withdrawal complete. New balance £" + fundOperations.getBalance() + "\n");
+            } else {
+                System.out.println("Transaction failed !");
+            }
+            double depositeCash = 250;
+            fundOperations.makeCashDeposit(depositeCash);
+        }
+    }
+}
+```
+The WelcomeMessage class
+```java
+public class WelcomeBankMessage {
+
+    public WelcomeBankMessage(){
+        System.out.println("Welcome to XYZ bank");
+    }
+}
+```
+The AccountNumberCheck class
+```java
+public class AccountNumberCheck {
+
+    private int accountNumber = 12345678;
+
+    public boolean isAccountActive(int accountNumber) {
+        boolean result = false;
+        if (accountNumber == getAccountNumber()) {
+            result = true;
+        }
+        return result;
+    }
+
+    public int getAccountNumber() {
+        return accountNumber;
+    }
+}
+```
+The SecurityCodeCheck class
+```java
+public class SecurityCodeCheck {
+    private int securityCode = 87654321;
+
+    public boolean isSecurityCodeCorrect(int securityCode) {
+        boolean result = false;
+        if (securityCode == getSecurituCode()){
+            result = true;
+        }
+        return result;
+    }
+
+    public int getSecurituCode(){
+        return securityCode;
+    }
+}
+```
+The FundOperations class
+```java
+public class FundOperations {
+    private double balance;
+
+    public FundOperations(double balance) {
+        this.balance = balance;
+    }
+
+    public double getBalance() {
+        return this.balance;
+    }
+
+    public void decreaseBalance(double amountWithDrawn) {
+        this.balance -= amountWithDrawn;
+    }
+
+    public void increaseBalance(double amountDeposited) {
+        this.balance += amountDeposited;
+    }
+
+    public boolean isBalanceEnoughForCashWithDrawal(double cashWithdrawal) {
+        boolean result = false;
+        if (this.balance >= cashWithdrawal) {
+            decreaseBalance(cashWithdrawal);
+            System.out.println("Cash withdrawal complete. Current balance is £" + this.balance + "\n");
+            result = true;
+        } else {
+            System.out.println("Insufficient balance to make cash withdrawal. Current balance is £" + this.balance + "\n");
+        }
+        return result;
+    }
+
+    public void makeCashDeposit(double cashTodeposit) {
+        increaseBalance(cashTodeposit);
+        System.out.println("Cash deposit completed. The new balance is £" + this.balance + "\n");
+    }
+}
+```
+Our 10 tests are all passing at this point. This will help to troubleshoot any errors while we implement the facade pattern.
+```java
+public class BankAccountTest {
+
+    @Test
+    void verifyBankAccountNumber(){
+        AccountNumberCheck accountNumberCheck = new AccountNumberCheck();
+        int accountNumber = 12345678;
+        int savedAccountNumber = accountNumberCheck.getAccountNumber();
+        assertEquals(accountNumber, savedAccountNumber);
+    }
+
+    @Test
+    void isBankAccountNumberCorrect(){
+        AccountNumberCheck accountNumberCheck = new AccountNumberCheck();
+        int accountNumber = 12345678;
+        assertTrue(accountNumberCheck.isAccountActive(accountNumber));
+    }
+
+    @Test
+    void verifySecurityyCode(){
+        SecurityCodeCheck securityCodeCheck = new SecurityCodeCheck();
+        int securityCode = 87654321;
+        int savedSecurituCode = securityCodeCheck.getSecurituCode();
+        assertEquals(securityCode, savedSecurituCode);
+    }
+
+    @Test
+    void isSecurityCodeCorrect(){
+        SecurityCodeCheck securityCodeCheck = new SecurityCodeCheck();
+        int securityCode = 87654321;
+        assertTrue(securityCodeCheck.isSecurityCodeCorrect(securityCode));
+    }
+
+    @Test
+    void accountBalance(){
+        FundOperations fundOperations = new FundOperations(1000.00);
+        assertEquals(1000.00,fundOperations.getBalance());
+    }
+
+    @Test
+    void decreaseAccountBalance(){
+        FundOperations fundOperations = new FundOperations(1000.00);
+        fundOperations.decreaseBalance(100.00);
+        double newBalance = fundOperations.getBalance();
+        assertEquals(900.00, newBalance);
+    }
+
+    @Test
+    void increaseAccountBalance(){
+        FundOperations fundOperations = new FundOperations(1000.00);
+        fundOperations.increaseBalance(100.00);
+        double newBalance = fundOperations.getBalance();
+        assertEquals(1100.00, newBalance);
+    }
+
+    @Test
+    void sufficinetFundsForCashWithDrawal () {
+        FundOperations fundOperations = new FundOperations(1000.00);
+        double cashWithdrawal = 1000.00;
+        assertTrue(fundOperations.isBalanceEnoughForCashWithDrawal(cashWithdrawal));
+    }
+
+    @Test
+    void NotsufficinetFundsForCashWithDrawal () {
+        FundOperations fundOperations = new FundOperations(100.00);
+        double cashWithdrawal = 1000.00;
+        assertFalse(fundOperations.isBalanceEnoughForCashWithDrawal(cashWithdrawal));
+    }
+
+    @Test
+    void makeCashDeposit(){
+        FundOperations fundOpeations = new FundOperations(0.00);
+        fundOpeations.makeCashDeposit(1500.00);
+        double newBalance = fundOpeations.getBalance();
+        assertEquals(1500.00, newBalance);
+    }
+}
+```
+
+Now let us introduce the facade pattern. We create BankAccountFacade class to act as our interface to the bank subsystem classes.
+
+Let us create a bank app that deos simple operations:
+- deposite cash
+- withdraw cash
+
+So our bank app class should change to something like this 
+```java
+public class BankAccountApp {
+
+    public static void main(String[] args) {
+
+        final int accountNumber = 12345678;
+        final int securityCode = 87654321;
+        final double startingBalance = 0.00;
+
+        BankAccountFacade xyzBank = new BankAccountFacade(accountNumber, securityCode, startingBalance);
+
+        xyzBank.depositCash(1000.00);
+        xyzBank.withdrawCash(570.00);
+        xyzBank.depositeCash(230.00);
+    }
+}
+```
+So the facade class should be like this to start with
+```java
+public class BankAccountFacade {
+
+    private final int accountNumber;
+    private final int securityCode;
+
+    WelcomeBankMessage welcomeBankMessage;
+    AccountNumberCheck accountNumberCheck;
+    SecurityCodeCheck securityCodeCheck;
+    FundOperations fundOperations;
+
+    public BankAccountFacade(int accountNumber, int securityCode, double startingBalance) {
+        this.accountNumber = accountNumber;
+        this.securityCode = securityCode;
+
+        welcomeBankMessage = new WelcomeBankMessage();
+        accountNumberCheck = new AccountNumberCheck();
+        securityCodeCheck = new SecurityCodeCheck();
+        fundOperations = new FundOperations(startingBalance);
+    }
+
+    public void depositCash(double depositeAmount) {
+    }
+
+    public void withdrawCash(double WithDrawAmount) {
+    }
+}
+```
+Now we implement the two methods depositCash() and withDrawCash(). The implementation is mainy what was in our bank app runner class when we started
+```java
+public class BankAccountFacade {
+
+    private final int accountNumber;
+    private final int securityCode;
+
+    WelcomeBankMessage welcomeBankMessage;
+    AccountNumberCheck accountNumberCheck;
+    SecurityCodeCheck securityCodeCheck;
+    FundOperations fundOperations;
+
+    public BankAccountFacade(int accountNumber, int securityCode, double startingBalance) {
+        this.accountNumber = accountNumber;
+        this.securityCode = securityCode;
+
+        welcomeBankMessage = new WelcomeBankMessage();
+        accountNumberCheck = new AccountNumberCheck();
+        securityCodeCheck = new SecurityCodeCheck();
+        fundOperations = new FundOperations(startingBalance);
+    }
+
+    public void depositCash(double depositeAmount) {
+        fundOperations.makeCashDeposit(depositeAmount);
+    }
+
+    public void withdrawCash(double WithDrawAmount) {
+        if (accountNumberCheck.isAccountActive(accountNumber) && securityCodeCheck.isSecurityCodeCorrect(securityCode)) {
+            if (fundOperations.isBalanceEnoughForCashWithDrawal(WithDrawAmount)) {
+                fundOperations.decreaseBalance(WithDrawAmount);
+                System.out.println("Cash withdrawal of £" + WithDrawAmount + " is complete. The new balance is £" + fundOperations.getBalance() + "\n");
+            } else {
+                System.out.println("Transaction failed !");
+            }
+        }
+    }
+}
+```
+Notice how the facade class encapsulated the implementation that was in the bank app runner class when we started. We no longer see the operations of checking account number or security code. We just requested the actuall client operations of deposit and withdrawal.
+
+We run our tests again and all passed.

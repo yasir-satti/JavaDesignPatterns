@@ -4,11 +4,11 @@ public class SecurityCodeCheck {
     private int securityCode = 87654321;
 
     public boolean isSecurityCodeCorrect(int securityCode) {
+        boolean result = false;
         if (securityCode == getSecurituCode()){
-            return true;
-        } else {
-            return false;
+            result = true;
         }
+        return result;
     }
 
     public int getSecurituCode(){

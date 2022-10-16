@@ -5,11 +5,11 @@ public class AccountNumberCheck {
     private int accountNumber = 12345678;
 
     public boolean isAccountActive(int accountNumber) {
+        boolean result = false;
         if (accountNumber == getAccountNumber()) {
-            return true;
-        } else {
-            return false;
+            result = true;
         }
+        return result;
     }
 
     public int getAccountNumber() {
