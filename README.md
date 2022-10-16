@@ -560,9 +560,9 @@ People often use Factory Method as the standard way to create objects; but it is
 
 Factory Methods are routinely specified by an architectural framework, and then implemented by the user of the framework.
 
-References [Adaptr](https://refactoring.guru/design-patterns/adapter) /
-[Adapter pattern tutorial](https://www.tutorialspoint.com/design_pattern/adapter_pattern.htm)
-/ [Adapter Pattern in Java](https://www.baeldung.com/java-adapter-pattern)
+References [Factory Method](https://refactoring.guru/design-patterns/factory-method) /
+[Factory method design pattern in Java](https://www.geeksforgeeks.org/factory-method-design-pattern-in-java/)
+/ [Factory Method Design Pattern](https://sourcemaking.com/design_patterns/factory_method#:~:text=Example,molds%20of%20the%20desired%20shapes.)  / [What is the Factory Pattern? video](https://www.youtube.com/watch?v=TdJatgto5cU)
 
     - Code example
 
