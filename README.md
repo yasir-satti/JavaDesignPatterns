@@ -1174,7 +1174,7 @@ Notice how the facade class encapsulated the implementation that was in the bank
 We run our tests again and all passed.
 
 <a name="command"></a>
-### 2.6 Command (Behavioural)
+### 2.6 Command (Behavioral)
 
 
     - Intent
@@ -1192,9 +1192,9 @@ In command pattern there is a Command object that encapsulates a request by bind
 
 Parameterizing other objects with different requests in our analogy means that the button used to turn on the lights can later be used to turn on stereo or maybe open the garage door.
 
-References [Facade](https://refactoring.guru/design-patterns/facade) /
-[Facade Design Pattern in Java](https://www.baeldung.com/java-facade-pattern)
-/ [Facade Design Pattern | Introduction](https://www.geeksforgeeks.org/facade-design-pattern-introduction/)
+References [Comman](https://refactoring.guru/design-patterns/command) /
+[Command pattern](https://www.geeksforgeeks.org/command-pattern/)
+/ [Command Design Pattern](https://sourcemaking.com/design_patterns/command)
 
     - Code example
 
@@ -1362,7 +1362,33 @@ class LightOffCommand implements Command
 Now we create the classes that is implementing the Stereo device functionalities
 
 ```java
+public class StereoOffCommand implements Command
+{
+    Stereo stereo;
+    public StereoOffCommand(Stereo stereo)
+    {
+        this.stereo = stereo;
+    }
+    public void execute()
+    {
+        stereo.off();
+    }
+}
 
+public class StereoOnWithCDCommand implements Command
+{
+    Stereo stereo;
+    public StereoOnWithCDCommand(Stereo stereo)
+    {
+        this.stereo = stereo;
+    }
+    public void execute()
+    {
+        stereo.on();
+        stereo.setCD();
+        stereo.setVolume(11);
+    }
+}
 ```
 
 So now we need the remote control device. We will have a simple one with one button on it
@@ -1388,4 +1414,40 @@ public class SimpleRemoteControl {
     }
 }
 ```
+
+Now let us use the remote control
+
+```java
+class RemoteControlApp
+{
+    public static void main(String[] args)
+    {
+        SimpleRemoteControl remote =
+                new SimpleRemoteControl();
+        Light light = new Light();
+        Stereo stereo = new Stereo();
+
+        // we can change command dynamically
+        remote.setCommand(new LightOnCommand(light));
+        remote.buttonWasPressed();
+        
+        remote.setCommand(new StereoOnWithCDCommand(stereo));
+        remote.buttonWasPressed();
+        
+        remote.setCommand(new StereoOffCommand(stereo));
+        remote.buttonWasPressed();
+    }
+}
+```
+
+Notice that the remote control doesn’t know anything about turning on the stereo. That information is contained in a separate command object. This reduces the coupling between them.
+
+Advantages:
+
+- Makes our code extensible as we can add new commands without changing existing code.
+- Reduces coupling between the invoker and receiver of a command.
+
+Disadvantages:
+
+- Increase in the number of classes for each individual command
 

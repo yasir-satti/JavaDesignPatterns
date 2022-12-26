@@ -10,14 +10,13 @@ class RemoteControlApp
         Stereo stereo = new Stereo();
 
         // we can change command dynamically
-        remote.setCommand(new
-                LightOnCommand(light));
+        remote.setCommand(new LightOnCommand(light));
         remote.buttonWasPressed();
-        remote.setCommand(new
-                StereoOnWithCDCommand(stereo));
+
+        remote.setCommand(new StereoOnWithCDCommand(stereo));
         remote.buttonWasPressed();
-        remote.setCommand(new
-                StereoOffCommand(stereo));
+
+        remote.setCommand(new StereoOffCommand(stereo));
         remote.buttonWasPressed();
     }
 }
