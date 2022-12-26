@@ -7,6 +7,7 @@
 
     - Behavioural
         - [Observer](#observer)
+        - [Command](#command)
     - Creational
         - [Builder](#builder)
         - [Factory method](#factorymethod)
@@ -1171,3 +1172,220 @@ public class BankAccountFacade {
 Notice how the facade class encapsulated the implementation that was in the bank app runner class when we started. We no longer see the operations of checking account number or security code. We just requested the actuall client operations of deposit and withdrawal.
 
 We run our tests again and all passed.
+
+<a name="command"></a>
+### 2.6 Command (Behavioural)
+
+
+    - Intent
+Command is a behavioral design pattern that turns a request into a stand-alone object that contains all information about the request. This transformation lets you pass requests as a method arguments, delay or queue a request’s execution, and support undoable operations.
+
+The command pattern encapsulates a request as an object, thereby letting us parameterize other objects with different requests, queue or log requests, and support undoable operations.
+
+queue or log requests, and support undoable operations means that Command’s Execute operation can store state for reversing its effects in the Command itself. The Command may have an added unExecute operation that reverses the effects of a previous call to execute.It may also support logging changes so that they can be reapplied in case of a system crash.
+
+     - Problem
+We have a remote control and we want to use it to control a number of devices, stereo, lights etc.
+
+    - Solution
+In command pattern there is a Command object that encapsulates a request by binding together a set of actions on a specific receiver. It does so by exposing just one method execute() that causes some actions to be invoked on the receiver.
+
+Parameterizing other objects with different requests in our analogy means that the button used to turn on the lights can later be used to turn on stereo or maybe open the garage door.
+
+References [Facade](https://refactoring.guru/design-patterns/facade) /
+[Facade Design Pattern in Java](https://www.baeldung.com/java-facade-pattern)
+/ [Facade Design Pattern | Introduction](https://www.geeksforgeeks.org/facade-design-pattern-introduction/)
+
+    - Code example
+
+We have the devices ( Light + Stereo ) we want to control using the remote control device
+```java
+class Light
+{
+    public void on()
+    {
+        System.out.println("Light is on");
+    }
+    public void off()
+    {
+        System.out.println("Light is off");
+    }
+}
+
+class Stereo
+{
+    public void on()
+    {
+        System.out.println("Stereo is on");
+    }
+    public void off()
+    {
+        System.out.println("Stereo is off");
+    }
+    public void setCD()
+    {
+        System.out.println("Stereo is set " +
+                "for CD input");
+    }
+    public void setDVD()
+    {
+        System.out.println("Stereo is set"+
+                " for DVD input");
+    }
+    public void setRadio()
+    {
+        System.out.println("Stereo is set" +
+                " for Radio");
+    }
+    public void setVolume(int volume)
+    {
+        // code to set the volume
+        System.out.println("Stereo volume set"
+                + " to " + volume);
+    }
+}
+```
+
+Now we want functionality for both these devices to be set by the remote control:
+
+- Light On / Off
+- Stereo On / Off / SetCD / SetDVD / SetRadio / setVolume
+
+Now to do so we create a Command interface with execute() method
+```java
+interface Command
+{
+    public void execute();
+}
+```
+
+Here the command interface receives the requestes from the remote control and the execute() method is implemented by each device with the relevant actions
+
+The Light commands
+
+```java
+class LightOnCommand implements Command
+{
+    Light light;
+ 
+    // The constructor is passed the light it
+    // is going to control.
+    public LightOnCommand(Light light)
+    {
+       this.light = light;
+    }
+    public void execute()
+    {
+       light.on();
+    }
+}
+
+class LightOffCommand implements Command
+{
+    Light light;
+    public LightOffCommand(Light light)
+    {
+        this.light = light;
+    }
+    public void execute()
+    {
+         light.off();
+    }
+}
+```
+
+The Stereo commands
+
+```java
+class StereoOffCommand implements Command
+{
+    Stereo stereo;
+    public StereoOffCommand(Stereo stereo)
+    {
+        this.stereo = stereo;
+    }
+    public void execute()
+    {
+       stereo.off();
+    }
+}
+
+class StereoOnWithCDCommand implements Command
+{
+     Stereo stereo;
+     public StereoOnWithCDCommand(Stereo stereo)
+     {
+         this.stereo = stereo;
+     }
+     public void execute()
+     {
+         stereo.on();
+         stereo.setCD();
+         stereo.setVolume(11);
+     }
+}
+```
+
+Now we create the classes that is implementing the Light device functionalities
+
+```java
+class LightOnCommand implements Command
+{
+    Light light;
+ 
+    // The constructor is passed the light it
+    // is going to control.
+    public LightOnCommand(Light light)
+    {
+       this.light = light;
+    }
+    public void execute()
+    {
+       light.on();
+    }
+}
+
+class LightOffCommand implements Command
+{
+    Light light;
+    public LightOffCommand(Light light)
+    {
+        this.light = light;
+    }
+    public void execute()
+    {
+         light.off();
+    }
+}
+```
+
+Now we create the classes that is implementing the Stereo device functionalities
+
+```java
+
+```
+
+So now we need the remote control device. We will have a simple one with one button on it
+
+```java
+public class SimpleRemoteControl {
+    Command button;  // only one button
+
+    public SimpleRemoteControl()
+    {
+    }
+
+    public void setCommand(Command command)
+    {
+        // set the command the remote will
+        // execute
+        button = command;
+    }
+
+    public void buttonWasPressed()
+    {
+        button.execute();
+    }
+}
+```
+
