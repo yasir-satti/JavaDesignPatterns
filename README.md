@@ -1192,7 +1192,7 @@ In command pattern there is a Command object that encapsulates a request by bind
 
 Parameterizing other objects with different requests in our analogy means that the button used to turn on the lights can later be used to turn on stereo or maybe open the garage door.
 
-References [Comman](https://refactoring.guru/design-patterns/command) /
+References [Command](https://refactoring.guru/design-patterns/command) /
 [Command pattern](https://www.geeksforgeeks.org/command-pattern/)
 / [Command Design Pattern](https://sourcemaking.com/design_patterns/command)
 
